@@ -78,14 +78,6 @@ def pause():
         bool1 = True;
         canvas.after(300, step)
 
-def boundary():
-    global min, max
-    #min = minField.get()
-    #max = maxField.get()
-    #min = 40
-    #max = 60
-    print (minField.get())
-
 def settingsWindow(i):
     popup = Tk()
     popup.title("Settings " + str(ramen[i].getName()))
@@ -130,6 +122,7 @@ mainScreen = Tk()
 mainScreen.title("Admin Panel")
 #mainScreen.geometry('350x200')
 mainWindow = Frame(mainScreen)
+viewSelect = Frame(mainScreen)
 
 labels = []
 
@@ -175,8 +168,15 @@ def printMainScreen():
 
         i = i+1
 
-    btn = Button(mainWindow, text="Plot")
+    btn = Button(viewSelect, text="Temperatuur Lijn view")
+    btn2 = Button(viewSelect, text="Temperatuur Staaf view")
+    btn3 = Button(viewSelect, text="Licht lijn view")
+    btn4 = Button(viewSelect, text="Licht staaf view")
+
     btn.grid(column=0, row=(i))
+    btn2.grid(column=1, row=(i))
+    btn3.grid(column=2, row=(i))
+    btn4.grid(column=3, row=(i))
 
 def updateMainScreen():
     i = 0
@@ -238,6 +238,7 @@ canvas.after(300, step)
 
 root.grid(column=0, row=0)
 mainWindow.grid(column=0, row=1, sticky=W)
+viewSelect.grid(column=0, row=2, sticky=W)
 
 printMainScreen()
 mainWindow.mainloop()
