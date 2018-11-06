@@ -43,9 +43,6 @@ bool1 = True
 max = 100
 min = 0
 
-
-
-
 def step():
     if bool1 == True:
         global s, x2, y2
@@ -104,7 +101,27 @@ def settingsWindow(i):
 
     popup.mainloop()
 
+def nieuwRaamWindow():
+    popup = Tk()
+    popup.title("Raam toevoegen")
+    popup.geometry('350x200')
 
+    Label(popup, text="Raam naam").grid(row=0, sticky=W)
+    Label(popup, text="Rolluik percentage").grid(row=1, sticky=W)
+
+    e1 = Entry(popup)
+
+    e1.grid(row=0, column=1)
+
+    def raamToevoegen():
+        raam = Raam(str(e1.get()))
+        ramen.append(raam)
+        printMainWindow()
+
+    Button(popup, text='Update', command=raamToevoegen).grid(row=3, column=0, sticky=W, pady=4)
+    Button(popup, text='Quit', command=popup.quit).grid(row=3, column=1, sticky=W, pady=4)
+
+    popup.mainloop()
 
 # Ramen maken:
 ramen = []
@@ -123,10 +140,19 @@ mainScreen.title("Admin Panel")
 #mainScreen.geometry('350x200')
 mainWindow = Frame(mainScreen)
 viewSelect = Frame(mainScreen)
+adminPanel = Frame(mainScreen)
 
 labels = []
+buttons = []
 
-def printMainScreen():
+def printMainWindow():
+    # Delete labels:
+    for label in labels:
+        label.destroy()
+
+    for button in buttons:
+        button.destroy()
+
     i = 0
     for raam in ramen:
         # Print naam raam:
@@ -147,6 +173,10 @@ def printMainScreen():
             ramen[i].changeMode()
             updateMainScreen()
 
+        def verwijderWindow(i):
+            ramen.remove(ramen[i])
+            printMainWindow()
+
         veranderModeI = partial(veranderMode, i)
 
         btn = Button(mainWindow, text="Verander mode", command=veranderModeI)
@@ -155,28 +185,44 @@ def printMainScreen():
 
         btn2 = Button(mainWindow, text="Settings", command=settingsI)
 
+        verwijderI = partial(verwijderWindow, i)
+
+        btn3 = Button(mainWindow, text="Verwijder", command=verwijderI)
+
+
+
         # Alle collumnen in grid zetten:
-        lbl.grid(column=0, row=i)
-        lbl2.grid(column=1, row=i)
-        lbl3.grid(column=2, row=i)
-        btn.grid(column=3, row=i)
-        btn2.grid(column=4, row=i)
+        lbl.grid(column=0, row=i, padx=(1, 0), pady=1)
+        lbl2.grid(column=1, row=i, padx=(1, 0), pady=1)
+        lbl3.grid(column=2, row=i, padx=(1, 0), pady=1)
+        btn.grid(column=3, row=i, padx=(1, 0), pady=1)
+        btn2.grid(column=4, row=i, padx=(1, 0), pady=1)
+        btn3.grid(column=5, row=i, padx=(1, 0), pady=1)
 
         labels.append(lbl)
         labels.append(lbl2)
         labels.append(lbl3)
 
+        buttons.append(btn)
+        buttons.append(btn2)
+        buttons.append(btn3)
+
         i = i+1
 
+def printViewWindow():
     btn = Button(viewSelect, text="Temperatuur Lijn view")
     btn2 = Button(viewSelect, text="Temperatuur Staaf view")
     btn3 = Button(viewSelect, text="Licht lijn view")
     btn4 = Button(viewSelect, text="Licht staaf view")
 
-    btn.grid(column=0, row=(i))
-    btn2.grid(column=1, row=(i))
-    btn3.grid(column=2, row=(i))
-    btn4.grid(column=3, row=(i))
+    btn.grid(column=0, row=(0))
+    btn2.grid(column=1, row=(0))
+    btn3.grid(column=2, row=(0))
+    btn4.grid(column=3, row=(0))
+
+def printAdminPanel():
+    btn = Button(adminPanel, text="Nieuw Raam", command=nieuwRaamWindow)
+    btn.grid(column=0, row=(0))
 
 def updateMainScreen():
     i = 0
@@ -239,9 +285,12 @@ canvas.after(300, step)
 root.grid(column=0, row=0)
 mainWindow.grid(column=0, row=1, sticky=W)
 viewSelect.grid(column=0, row=2, sticky=W)
+adminPanel.grid(column=0, row=3, sticky=W)
 
-printMainScreen()
-mainWindow.mainloop()
+printMainWindow()
+printViewWindow()
+printAdminPanel()
+mainScreen.mainloop()
 
 
 
