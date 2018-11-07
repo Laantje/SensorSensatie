@@ -1,7 +1,11 @@
 from tkinter import *
+from tkinter.ttk import *
 from random import randint
-
 from functools import partial
+import matplotlib, numpy
+matplotlib.use('TkAgg')
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 import time
 
@@ -44,6 +48,8 @@ y2 = value_to_y(randint(0,100))
 bool1 = True
 max = 100
 min = 0
+global p
+p = 0
 
 def step():
     if bool1 == True:
@@ -53,13 +59,18 @@ def step():
             s = 1
             x2 = 50
             canvas.delete('temp') # only delete items tagged as temp
+            table.delete()
+            treevieuw()
+
         x1 = x2
         y1 = y2
         x2 = 50 + s*50
         temp = randint(min,max)
         y2 = value_to_y(temp)
         canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
-        # print(s, x1, y1, x2, y2)
+        table.insert('', 'end', value=['lalal', y2])
+
+        #print(s, x1, y1, x2, y2)
         s = s+1
 
         for raam in ramen:
@@ -214,8 +225,8 @@ def printMainWindow():
         i = i+1
 
 def printViewWindow():
-    btn = Button(viewSelect, text="Temperatuur Lijn view")
-    btn2 = Button(viewSelect, text="Temperatuur Staaf view")
+    btn = Button(viewSelect, text="Temperatuur Lijn view", command = lijngrafiek)
+    btn2 = Button(viewSelect, text="Temperatuur Staaf view", command= staafdiagram )
     btn3 = Button(viewSelect, text="Licht lijn view")
     btn4 = Button(viewSelect, text="Licht staaf view")
 
@@ -260,36 +271,83 @@ def updateMainScreen():
         labels.append(lbl2)
         labels.append(lbl3)
 
-root = Frame(mainScreen)
-#root.title('simple plot')
+def lijngrafiek():
+    global p, root, canvas
+    if (p>=1):
+        root.destroy()
 
-canvas = Canvas(root, width=1200, height=600, bg='white') # 0,0 is top left corner
-canvas.pack(expand=YES, fill=BOTH)
+    root = Frame(mainScreen)
+    #root.title('simple plot')
 
-Button(root, text='Pause', command=pause).pack()
-Button(root, text='Quit', command=root.quit).pack()
+    canvas = Canvas(root, width=1200, height=600, bg='white') # 0,0 is top left corner
+    canvas.pack(expand=YES, fill=BOTH)
 
-canvas.create_line(50,550,1150,550, width=2) # x-axis
-canvas.create_line(50,550,50,50, width=2)    # y-axis
+    Button(root, text='Pause', command=pause).pack()
+    Button(root, text='Quit', command=root.quit).pack()
 
-# x-axis
-for i in range(23):
-    x = 50 + (i * 50)
-    canvas.create_line(x,550,x,50, width=1, dash=(2,5))
-    canvas.create_text(x,550, text='%d'% (10*i), anchor=N)
+    canvas.create_line(50,550,1150,550, width=2) # x-axis
+    canvas.create_line(50,550,50,50, width=2)    # y-axis
 
-# y-axis
-for i in range(11):
-    y = 550 - (i * 50)
-    canvas.create_line(50,y,1150,y, width=1, dash=(2,5))
-    canvas.create_text(40,y, text='%d'% (10*i), anchor=E)
+    # x-axis
+    for i in range(23):
+        x = 50 + (i * 50)
+        canvas.create_line(x,550,x,50, width=1, dash=(2,5))
+        canvas.create_text(x,550, text='%d'% (10*i), anchor=N)
 
-canvas.after(300, step)
+    # y-axis
+    for i in range(11):
+        y = 550 - (i * 50)
+        canvas.create_line(50,y,1150,y, width=1, dash=(2,5))
+        canvas.create_text(40,y, text='%d'% (10*i), anchor=E)
 
-root.grid(column=0, row=0)
+    root.grid(column=0, row=0)
+    treevieuw()
+    canvas.after(300, step)
+    p=+1
+
+def staafdiagram():
+    global p, root
+    if (p>=1):
+        root.destroy()
+    root = Frame(mainScreen)
+    f = Figure(figsize=(12, 5), dpi=100)
+    ax = f.add_subplot(111)
+    data = (20, 35, 30, 35, 27, 55, 66, 23, 44, 60, 6, 2, 5)
+    n = len(data)
+    ind = numpy.arange(n)  # the x locations for the groups
+    width = .35
+
+    rects1 = ax.bar(ind, data, width, label='temperatuur')
+
+    ax.set_ylabel('temperatuur')
+
+    # ax.set_xticklabels(('leeg veld','maandag','dinsdag','woensdag','Donderdag','Vrijdag','zaterdag','Zondag'))
+    ax.set_xticks(ind)
+    ax.set_xticklabels(('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'))
+    ax.legend()
+    canvas = FigureCanvasTkAgg(f, master=root)
+    # canvas.show()
+    canvas.get_tk_widget().pack(side=LEFT, fill=BOTH, expand=1)
+    root.grid(column=0,row=0)
+    treevieuw()
+    p=+1
+
+
+def treevieuw():
+
+    global table
+    table = Treeview(mainScreen, columns=("uur", "value"), show='headings')
+    table.column("uur", width=100)
+    table.column("value", width=100)
+    table.heading("uur", text="uur")
+    table.heading("value", text="Waarde")
+    table.grid(column=1, row=0, sticky=NSEW)
+
+
 mainWindow.grid(column=0, row=1, sticky=W)
 viewSelect.grid(column=0, row=2, sticky=W)
 adminPanel.grid(column=0, row=3, sticky=W)
+
 
 printMainWindow()
 printViewWindow()
