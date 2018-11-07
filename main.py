@@ -6,8 +6,9 @@ from functools import partial
 import time
 
 class Raam:
-    def __init__(self, name):
+    def __init__(self, name, port):
         self.name = name
+        self.port = port
         self.mode = True
         self.rolluikPercentage = 0
 
@@ -31,6 +32,7 @@ class Raam:
 
     def setRolluik(self, perc):
         self.rolluikPercentage = perc
+
 
 def value_to_y(val):
     return 550-5*val
@@ -107,14 +109,16 @@ def nieuwRaamWindow():
     popup.geometry('350x200')
 
     Label(popup, text="Raam naam").grid(row=0, sticky=W)
-    Label(popup, text="Rolluik percentage").grid(row=1, sticky=W)
+    Label(popup, text="Poort").grid(row=1, sticky=W)
 
     e1 = Entry(popup)
+    e2 = Entry(popup)
 
     e1.grid(row=0, column=1)
+    e2.grid(row=1, column=1)
 
     def raamToevoegen():
-        raam = Raam(str(e1.get()))
+        raam = Raam(str(e1.get()), str(e2.get()))
         ramen.append(raam)
         printMainWindow()
 
@@ -125,14 +129,14 @@ def nieuwRaamWindow():
 
 # Ramen maken:
 ramen = []
-raam1 = Raam("raam1")
+"""raam1 = Raam("raam1")
 raam2 = Raam("raam2")
 raam3 = Raam("raam3")
 raam4 = Raam("raam4")
 ramen.append(raam1)
 ramen.append(raam2)
 ramen.append(raam3)
-ramen.append(raam4)
+ramen.append(raam4)"""
 
 # Main Window code:
 mainScreen = Tk()
