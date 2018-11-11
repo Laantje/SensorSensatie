@@ -9,12 +9,15 @@ from matplotlib.figure import Figure
 
 import time
 
+#hi
+
 class Raam:
     def __init__(self, name, port):
         self.name = name
         self.port = port
         self.mode = True
-        self.rolluikPercentage = 0
+        self.status = "In"
+        self.uitrolstand = 50
 
     def changeMode(self):
         if self.mode == True:
@@ -28,14 +31,32 @@ class Raam:
     def getMode(self):
         return self.mode
 
-    def getRolluik(self):
-        return self.rolluikPercentage
+    def getStatus(self):
+        return self.status
+
+    def getPoort(self):
+        return self.port
+
+    def getUitrolstand(self):
+        return self.uitrolstand
 
     def setName(self, name):
         self.name = name
 
-    def setRolluik(self, perc):
-        self.rolluikPercentage = perc
+    def setStatus(self, val):
+        self.status = val
+
+    def setPoort(self, val):
+        self.port = val
+
+    def setUitrolstand(self, val):
+        self.uitrolstand = val
+
+    def setStatus(self):
+        if self.status == "In":
+            self.status = "Uit"
+        else:
+            self.status = "In"
 
 
 def value_to_y(val):
@@ -75,7 +96,7 @@ def step():
 
         for raam in ramen:
             if raam.getMode() == True:
-                raam.setRolluik(temp)
+                raam.setStatus(temp)
 
         updateMainScreen()
         canvas.after(500, step)
@@ -94,23 +115,28 @@ def settingsWindow(i):
     popup.geometry('350x200')
 
     Label(popup, text="Window Name").grid(row=0, sticky=W)
-    Label(popup, text="Rolluik percentage").grid(row=1, sticky=W)
+    Label(popup, text="Poort").grid(row=1, sticky=W)
+    Label(popup, text="Uitrolstand").grid(row=2, sticky=W)
 
     e1 = Entry(popup)
     e2 = Entry(popup)
+    e3 = Entry(popup)
     e1.insert(10,str(ramen[i].getName()))
-    e2.insert(10,str(ramen[i].getRolluik()))
+    e2.insert(10,str(ramen[i].getPoort()))
+    e3.insert(10,str(ramen[i].getUitrolstand()))
 
     e1.grid(row=0, column=1)
     e2.grid(row=1, column=1)
+    e3.grid(row=2, column=1)
 
     def update():
         ramen[i].setName(e1.get())
-        ramen[i].setRolluik(e2.get())
+        ramen[i].setPoort(e2.get())
+        ramen[i].setUitrolstand(e3.get())
         updateMainScreen()
 
     Button(popup, text='Update', command=update).grid(row=3, column=0, sticky=W, pady=4)
-    Button(popup, text='Quit', command=popup.quit).grid(row=3, column=1, sticky=W, pady=4)
+    Button(popup, text='Quit', command=popup.destroy).grid(row=3, column=1, sticky=W, pady=4)
 
     popup.mainloop()
 
@@ -133,8 +159,8 @@ def nieuwRaamWindow():
         ramen.append(raam)
         printMainWindow()
 
-    Button(popup, text='Update', command=raamToevoegen).grid(row=3, column=0, sticky=W, pady=4)
-    Button(popup, text='Quit', command=popup.quit).grid(row=3, column=1, sticky=W, pady=4)
+    Button(popup, text='Toevoegen', command=raamToevoegen).grid(row=3, column=0, sticky=W, pady=4)
+    Button(popup, text='Quit', command=popup.destroy).grid(row=3, column=1, sticky=W, pady=4)
 
     popup.mainloop()
 
@@ -168,6 +194,23 @@ def printMainWindow():
     for button in buttons:
         button.destroy()
 
+    #Tekst boven de data
+    lbl = Label(mainWindow, text="Naam:")
+    lbl2 = Label(mainWindow, text="Modus:")
+    lbl3 = Label(mainWindow, text="Status:")
+    lbl4 = Label(mainWindow, text="Verander modus:")
+    lbl5 = Label(mainWindow, text="Settings:")
+    lbl6 = Label(mainWindow, text="Verwijder:")
+    lbl7 = Label(mainWindow, text="In/Uit:")
+
+    lbl.grid(column=0, row=0, padx=(1, 0), pady=1)
+    lbl2.grid(column=1, row=0, padx=(1, 0), pady=1)
+    lbl3.grid(column=2, row=0, padx=(1, 0), pady=1)
+    lbl4.grid(column=3, row=0, padx=(1, 0), pady=1)
+    lbl5.grid(column=4, row=0, padx=(1, 0), pady=1)
+    lbl6.grid(column=5, row=0, padx=(1, 0), pady=1)
+    lbl7.grid(column=6, row=0, padx=(1, 0), pady=1)
+
     i = 0
     for raam in ramen:
         # Print naam raam:
@@ -180,8 +223,8 @@ def printMainWindow():
         else:
             lbl2 = Label(mainWindow, text="Handmatig")
 
-        # Print rolluikPercentage:
-        lbl3 = Label(mainWindow, text=str(raam.getRolluik()) + "%")
+        # Print status:
+        lbl3 = Label(mainWindow, text=str(raam.getStatus()))
 
         # Print Modeknop:
         def veranderMode(i):
@@ -192,20 +235,29 @@ def printMainWindow():
             ramen.remove(ramen[i])
             printMainWindow()
 
-        veranderModeI = partial(veranderMode, i)
+        def veranderStatus(i):
+            ramen[i].setStatus()
+            printMainWindow()
 
+        veranderModeI = partial(veranderMode, i)
         btn = Button(mainWindow, text="Verander mode", command=veranderModeI)
 
         settingsI = partial(settingsWindow, i)
-
         btn2 = Button(mainWindow, text="Settings", command=settingsI)
 
         verwijderI = partial(verwijderWindow, i)
-
         btn3 = Button(mainWindow, text="Verwijder", command=verwijderI)
 
+        #Geef naam aan In/Uit
+        if ramen[i].getStatus() == "In":
+            string = "Uit"
+        else:
+            string = "In"
 
+        veranderStatusI = partial(veranderStatus, i)
+        btn4 = Button(mainWindow, text=string, command=veranderStatusI)
 
+        i = i + 1
         # Alle collumnen in grid zetten:
         lbl.grid(column=0, row=i, padx=(1, 0), pady=1)
         lbl2.grid(column=1, row=i, padx=(1, 0), pady=1)
@@ -213,6 +265,7 @@ def printMainWindow():
         btn.grid(column=3, row=i, padx=(1, 0), pady=1)
         btn2.grid(column=4, row=i, padx=(1, 0), pady=1)
         btn3.grid(column=5, row=i, padx=(1, 0), pady=1)
+        btn4.grid(column=6, row=i, padx=(1, 0), pady=1)
 
         labels.append(lbl)
         labels.append(lbl2)
@@ -222,7 +275,7 @@ def printMainWindow():
         buttons.append(btn2)
         buttons.append(btn3)
 
-        i = i+1
+
 
 def printViewWindow():
     btn = Button(viewSelect, text="Temperatuur Lijn view", command = lijngrafiek)
@@ -257,15 +310,16 @@ def updateMainScreen():
         else:
             lbl2 = Label(mainWindow, text="Handmatig")
 
-        # Print rolluikPercentage:
-        lbl3 = Label(mainWindow, text=str(raam.getRolluik()) + "%")
+        # Print status:
+        lbl3 = Label(mainWindow, text=str(raam.getStatus()))
+
+        #ittereer
+        i = i + 1
 
         # Alle collumnen in grid zetten:
         lbl.grid(column=0, row=i)
         lbl2.grid(column=1, row=i)
         lbl3.grid(column=2, row=i)
-
-        i = i+1
 
         labels.append(lbl)
         labels.append(lbl2)
@@ -344,17 +398,12 @@ def treevieuw():
     table.grid(column=1, row=0, sticky=NSEW)
 
 
-mainWindow.grid(column=0, row=1, sticky=W)
-viewSelect.grid(column=0, row=2, sticky=W)
-adminPanel.grid(column=0, row=3, sticky=W)
+mainWindow.grid(column=0, row=2, sticky=W)
+viewSelect.grid(column=0, row=3, sticky=W)
+adminPanel.grid(column=0, row=1, sticky=W)
 
 
 printMainWindow()
 printViewWindow()
 printAdminPanel()
 mainScreen.mainloop()
-
-
-
-
-
