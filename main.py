@@ -58,7 +58,6 @@ class Raam:
         else:
             self.status = "In"
 
-
 def value_to_y(val):
     return 550-5*val
 
@@ -89,14 +88,11 @@ def step():
         temp = randint(min,max)
         y2 = value_to_y(temp)
         canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
-        table.insert('', 'end', value=['lalal', y2])
+        table.insert('', 'end', value=['testdata', y2])
 
         #print(s, x1, y1, x2, y2)
         s = s+1
 
-        for raam in ramen:
-            if raam.getMode() == True:
-                raam.setStatus(temp)
 
         updateMainScreen()
         canvas.after(500, step)
@@ -123,6 +119,7 @@ def settingsWindow(i):
     e3 = Entry(popup)
     e1.insert(10,str(ramen[i].getName()))
     e2.insert(10,str(ramen[i].getPoort()))
+
     e3.insert(10,str(ramen[i].getUitrolstand()))
 
     e1.grid(row=0, column=1)
@@ -132,7 +129,10 @@ def settingsWindow(i):
     def update():
         ramen[i].setName(e1.get())
         ramen[i].setPoort(e2.get())
-        ramen[i].setUitrolstand(e3.get())
+        if int(e3.get()) > 100:
+            ramen[i].setUitrolstand(100)
+        else:
+            ramen[i].setUitrolstand(e3.get())
         updateMainScreen()
 
     Button(popup, text='Update', command=update).grid(row=3, column=0, sticky=W, pady=4)
@@ -279,9 +279,9 @@ def printMainWindow():
 
 def printViewWindow():
     btn = Button(viewSelect, text="Temperatuur Lijn view", command = lijngrafiek)
-    btn2 = Button(viewSelect, text="Temperatuur Staaf view", command= staafdiagram )
-    btn3 = Button(viewSelect, text="Licht lijn view")
-    btn4 = Button(viewSelect, text="Licht staaf view")
+    btn2 = Button(viewSelect, text="Temperatuur Staaf view", command= staafdiagramtemp )
+    btn3 = Button(viewSelect, text="Licht lijn view", command = lijngrafiek)
+    btn4 = Button(viewSelect, text="Licht staaf view", command = staafdiagramlicht)
 
     btn.grid(column=0, row=(0))
     btn2.grid(column=1, row=(0))
@@ -359,7 +359,7 @@ def lijngrafiek():
     canvas.after(300, step)
     p=+1
 
-def staafdiagram():
+def staafdiagramtemp():
     global p, root
     if (p>=1):
         root.destroy()
@@ -386,6 +386,32 @@ def staafdiagram():
     treevieuw()
     p=+1
 
+def staafdiagramlicht():
+    global p, root
+    if (p>=1):
+        root.destroy()
+    root = Frame(mainScreen)
+    f = Figure(figsize=(12, 5), dpi=100)
+    ax = f.add_subplot(111)
+    data = (20, 35, 30, 35, 27, 55, 66, 23, 44, 60, 6, 2, 5)
+    n = len(data)
+    ind = numpy.arange(n)  # the x locations for the groups
+    width = .35
+
+    rects1 = ax.bar(ind, data, width, label='licht')
+
+    ax.set_ylabel('licht')
+
+    # ax.set_xticklabels(('leeg veld','maandag','dinsdag','woensdag','Donderdag','Vrijdag','zaterdag','Zondag'))
+    ax.set_xticks(ind)
+    ax.set_xticklabels(('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'))
+    ax.legend()
+    canvas = FigureCanvasTkAgg(f, master=root)
+    # canvas.show()
+    canvas.get_tk_widget().pack(side=LEFT, fill=BOTH, expand=1)
+    root.grid(column=0,row=0)
+    treevieuw()
+    p=+1
 
 def treevieuw():
 
