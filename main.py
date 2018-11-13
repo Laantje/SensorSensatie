@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter.ttk import *
 from Raam import *
-from Lijngrafiek import *
 from random import randint
 from functools import partial
 import matplotlib, numpy
@@ -59,6 +58,8 @@ def pause():
     else:
         bool1 = True;
         canvas.after(300, step)
+
+
 
 def settingsWindow(i):
     popup = Tk()
@@ -388,3 +389,5 @@ printMainWindow()
 printViewWindow()
 printAdminPanel()
 mainScreen.mainloop()
+
+
