@@ -3,6 +3,9 @@ from tkinter.ttk import *
 from Raam import *
 from random import randint
 from functools import partial
+import threading
+import serial
+import pymysql
 import matplotlib, numpy
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -51,6 +54,31 @@ def step():
         updateMainScreen()
         canvas.after(500, step)
 
+def tempstep():
+    if bool1 == True:
+        global s, x2, y2
+        if s == 23:
+            # new frame
+            s = 1
+            x2 = 50
+            canvas.delete('temp') # only delete items tagged as temp
+            table.delete()
+            treevieuw()
+
+        x1 = x2
+        y1 = y2
+        x2 = 50 + s*50
+        y2 = ramen[0].getTemp()
+        canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
+        table.insert('', 'end', value=[time.clock_gettime(), y2])
+
+        #print(s, x1, y1, x2, y2)
+        s = s+1
+
+
+        updateMainScreen()
+        canvas.after(500, tempstep)
+
 def pause():
     global bool1
     if bool1 == True:
@@ -96,13 +124,24 @@ def settingsWindow(i):
 
     popup.mainloop()
 
+def getDatabaseData():
+    global myCursor
+    myCursor = myDatabase.cursor()
+    myCursor.execute("SELECT * FROM ramen")
+
+    myresult = myCursor.fetchall()
+
+    for x in myresult:
+        raam = Raam(x[1], x[2])
+        ramen.append(raam)
+
 def nieuwRaamWindow():
     popup = Tk()
     popup.title("Raam toevoegen")
     popup.geometry('350x200')
 
     Label(popup, text="Raam naam").grid(row=0, sticky=W)
-    Label(popup, text="Poort").grid(row=1, sticky=W)
+    Label(popup, text="Poort nummer").grid(row=1, sticky=W)
 
     e1 = Entry(popup)
     e2 = Entry(popup)
@@ -111,7 +150,18 @@ def nieuwRaamWindow():
     e2.grid(row=1, column=1)
 
     def raamToevoegen():
+        #create raam
         raam = Raam(str(e1.get()), str(e2.get()))
+
+        #Add new raam to DB
+        sql = "INSERT INTO ramen (naam, poort, type, status, mode, uitrolstand) VALUES (%s, %s, %s, %s, %s, %s)"
+        val = (str(e1.get()), int(e2.get()), 1, 1, 1, 50)
+
+        myCursor.execute(sql, val)
+
+        myDatabase.commit()
+
+        #add raam to ramen
         ramen.append(raam)
         printMainWindow()
 
@@ -130,6 +180,23 @@ ramen.append(raam1)
 ramen.append(raam2)
 ramen.append(raam3)
 ramen.append(raam4)"""
+
+#Try connecting to DB
+global myDatabase
+myDatabase = pymysql.connect(host="localhost", user="root", password="", db="zengltd")
+getDatabaseData()
+
+"""mycursor = myDatabase.cursor()
+
+sql = "INSERT INTO ramen (naam, poort, type, status, mode, uitrolstand) VALUES (%s, %s, %s, %s, %s, %s)"
+val = ("raam1", 5, 1, 1, 1, 50)
+
+mycursor.execute(sql, val)
+
+myDatabase.commit()"""
+
+if myDatabase.open == False:
+    sys.exit(1)
 
 # Main Window code:
 mainScreen = Tk()
@@ -230,7 +297,7 @@ def printMainWindow():
         buttons.append(btn)
         buttons.append(btn2)
         buttons.append(btn3)
-
+        buttons.append(btn4)
 
 
 def printViewWindow():
@@ -312,7 +379,7 @@ def lijngrafiek():
 
     root.grid(column=0, row=0)
     treevieuw()
-    canvas.after(300, step)
+    canvas.after(300, tempstep)
     p=+1
 
 def staafdiagramtemp():
