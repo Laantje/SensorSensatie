@@ -31,49 +31,52 @@ p = 0
 def step():
     if bool1 == True:
         global s, x2, y2
-        x1 = 0
-        x2 = 50
-        y1 = 0
-        y2 = 0
-        s = 0
-        for tempra in ramen[0].getTempList():
-            x1 = x2
-            y1 = y2
-            x2 = 50 + s*50
-            y2 = value_to_y(tempra)
-            canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
-            #table.insert('', 'end', value=['testdata', y2])
+        if s == 23:
+            # new frame
+            s = 1
+            x2 = 50
+            canvas.delete('temp') # only delete items tagged as temp
+            table.delete()
+            treevieuw()
 
-            #print(s, x1, y1, x2, y2)
-            s = s+1
+        x1 = x2
+        y1 = y2
+        x2 = 50 + s*50
+        temp = randint(min,max)
+        y2 = value_to_y(temp)
+        canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
+        table.insert('', 'end', value=['testdata', y2])
+
+        #print(s, x1, y1, x2, y2)
+        s = s+1
 
         updateMainScreen()
-        canvas.after(4000, step)
+        canvas.after(500, step)
 
 def tempstep():
     if bool1 == True:
-        canvas.delete('temp')
         global s, x2, y2
-        x1 = 0
-        x2 = 50
-        y1 = 0
-        y2 = 0
-        s = 0
-        for bright in ramen[0].getBrightList():
+        if s == 23:
+            # new frame
+            s = 1
+            x2 = 50
+            canvas.delete('temp') # only delete items tagged as temp
+            table.delete()
+            treevieuw()
 
-            x1 = x2
-            y1 = y2
-            x2 = 50 + s*50
-            y2 = value_to_y(bright)
-            canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
-            #table.insert('', 'end', value=['la', bright])
+        x1 = x2
+        y1 = y2
+        x2 = 50 + s*50
+        y2 = ramen[0].getTemp()
+        canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
+        table.insert('', 'end', value=[time.clock_gettime(), y2])
 
-            #print(s, x1, y1, x2, y2)
-            s = s+1
+        #print(s, x1, y1, x2, y2)
+        s = s+1
 
 
         updateMainScreen()
-        canvas.after(4000, tempstep)
+        canvas.after(500, tempstep)
 
 def pause():
     global bool1
@@ -221,7 +224,6 @@ def printMainWindow():
     lbl5 = Label(mainWindow, text="Settings:")
     lbl6 = Label(mainWindow, text="Verwijder:")
     lbl7 = Label(mainWindow, text="In/Uit:")
-    lbl8 = Label(mainWindow, text="Connected:")
 
     lbl.grid(column=0, row=0, padx=(1, 0), pady=1)
     lbl2.grid(column=1, row=0, padx=(1, 0), pady=1)
@@ -230,7 +232,6 @@ def printMainWindow():
     lbl5.grid(column=4, row=0, padx=(1, 0), pady=1)
     lbl6.grid(column=5, row=0, padx=(1, 0), pady=1)
     lbl7.grid(column=6, row=0, padx=(1, 0), pady=1)
-    lbl8.grid(column=7, row=0, padx=(1, 0), pady=1)
 
     i = 0
     for raam in ramen:
@@ -260,10 +261,6 @@ def printMainWindow():
             ramen[i].setStatus()
             printMainWindow()
 
-        def veranderConnected(i):
-            ramen[i].setConnected()
-            printMainWindow()
-
         veranderModeI = partial(veranderMode, i)
         btn = Button(mainWindow, text="Verander mode", command=veranderModeI)
 
@@ -282,15 +279,6 @@ def printMainWindow():
         veranderStatusI = partial(veranderStatus, i)
         btn4 = Button(mainWindow, text=string, command=veranderStatusI)
 
-        #Geef naam aan connected/disconnected
-        if ramen[i].getConnected() == True:
-            string2 = "Connected"
-        else:
-            string2 = "Disconnected"
-
-        veranderConnectedI = partial(veranderConnected, i)
-        btn5 = Button(mainWindow, text=string2, command=veranderConnectedI)
-
         i = i + 1
         # Alle collumnen in grid zetten:
         lbl.grid(column=0, row=i, padx=(1, 0), pady=1)
@@ -300,7 +288,6 @@ def printMainWindow():
         btn2.grid(column=4, row=i, padx=(1, 0), pady=1)
         btn3.grid(column=5, row=i, padx=(1, 0), pady=1)
         btn4.grid(column=6, row=i, padx=(1, 0), pady=1)
-        btn5.grid(column=7, row=i, padx=(1, 0), pady=1)
 
         labels.append(lbl)
         labels.append(lbl2)
@@ -310,13 +297,12 @@ def printMainWindow():
         buttons.append(btn2)
         buttons.append(btn3)
         buttons.append(btn4)
-        buttons.append(btn5)
 
 
 def printViewWindow():
     btn = Button(viewSelect, text="Temperatuur Lijn view", command = lijngrafiek)
     btn2 = Button(viewSelect, text="Temperatuur Staaf view", command= staafdiagramtemp )
-    btn3 = Button(viewSelect, text="Licht lijn view", command = lijngrafiek2)
+    btn3 = Button(viewSelect, text="Licht lijn view", command = lijngrafiek)
     btn4 = Button(viewSelect, text="Licht staaf view", command = staafdiagramlicht)
 
     btn.grid(column=0, row=(0))
@@ -361,40 +347,6 @@ def updateMainScreen():
         labels.append(lbl2)
         labels.append(lbl3)
 
-def lijngrafiek2():
-    global p, root, canvas
-    if (p>=1):
-        root.destroy()
-
-    root = Frame(mainScreen)
-    #root.title('simple plot')
-
-    canvas = Canvas(root, width=1200, height=600, bg='white') # 0,0 is top left corner
-    canvas.pack(expand=YES, fill=BOTH)
-
-    Button(root, text='Pause', command=pause).pack()
-    Button(root, text='Quit', command=root.quit).pack()
-
-    canvas.create_line(50,550,1150,550, width=2) # x-axis
-    canvas.create_line(50,550,50,50, width=2)    # y-axis
-
-    # x-axis
-    for i in range(23):
-        x = 50 + (i * 50)
-        canvas.create_line(x,550,x,50, width=1, dash=(2,5))
-        canvas.create_text(x,550, text='%d'% (10*i), anchor=N)
-
-    # y-axis
-    for i in range(11):
-        y = 550 - (i * 50)
-        canvas.create_line(50,y,1150,y, width=1, dash=(2,5))
-        canvas.create_text(40,y, text='%d'% (10*i), anchor=E)
-
-    root.grid(column=0, row=0)
-    treevieuw()
-    canvas.after(300, tempstep)
-    p=+1
-
 def lijngrafiek():
     global p, root, canvas
     if (p>=1):
@@ -426,7 +378,7 @@ def lijngrafiek():
 
     root.grid(column=0, row=0)
     treevieuw()
-    canvas.after(300, step)
+    canvas.after(300, tempstep)
     p=+1
 
 def staafdiagramtemp():
@@ -503,5 +455,3 @@ printMainWindow()
 printViewWindow()
 printAdminPanel()
 mainScreen.mainloop()
-
-
