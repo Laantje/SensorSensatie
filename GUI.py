@@ -1,6 +1,7 @@
 from tkinter import *
 import sys
-
+from iets import *
+from database import *
 try:
     import Tkinter as tk
 except ImportError:
@@ -23,7 +24,14 @@ def vp_start_gui():
     root = tk.Tk()
     top = Toplevel1 (root)
     test_support.init(root, top)
+    top.add_table(top.TFrame4)
+    top.add_table(top.TFrame7)
+    top.add_table(top.TFrame10)
+    top.add_table(top.TFrame13)
+    top.add_table(top.TFrame16)
     root.mainloop()
+
+
 
 w = None
 def create_Toplevel1(root, *args, **kwargs):
@@ -88,12 +96,12 @@ class Toplevel1:
         self.TRadiobutton1 = ttk.Radiobutton(self.TFrame1)
         self.TRadiobutton1.place(relx=0.059, rely=0.222, relwidth=0.031
                 , relheight=0.0, height=26)
-        self.TRadiobutton1.configure(text='''Uit''', variable=self.var1, value=0)
+        self.TRadiobutton1.configure(text='''Uit''', variable=self.var1, value=0, command= self.handmatigUit)
 
         self.TRadiobutton2 = ttk.Radiobutton(self.TFrame1)
         self.TRadiobutton2.place(relx=0.097, rely=0.222, relwidth=0.036
                 , relheight=0.0, height=26)
-        self.TRadiobutton2.configure(text='''Aan''', variable=self.var1, value=1)
+        self.TRadiobutton2.configure(text='''Aan''', variable=self.var1, value=1, command= self.handmatigAan)
 
         self.TLabel2 = ttk.Label(self.TFrame1)
         self.TLabel2.place(relx=0.149, rely=0.222, height=24, width=107)
@@ -198,7 +206,7 @@ class Toplevel1:
         self.TProgressbar5.place(relx=0.907, rely=0.222, relwidth=0.074
                 , relheight=0.0, height=22)
 
-        self.TFrame2 = ttk.Frame(top)
+        self.TFrame2 = ttk.Frame(top) # eerste blok
         self.TFrame2.place(relx=0.0, rely=0.047, relheight=0.19, relwidth=0.991)
         self.TFrame2.configure(relief='groove')
         self.TFrame2.configure(borderwidth="2")
@@ -238,6 +246,7 @@ class Toplevel1:
         self.TButton2.place(relx=0.424, rely=0.6, height=30, width=100)
         self.TButton2.configure(takefocus="")
         self.TButton2.configure(text='''Staafdiagram''')
+        self.TButton2.configure(command=lambda: self.add_bar(self.TFrame3))
 
         self.TLabel10 = ttk.Label(self.TFrame2)
         self.TLabel10.place(relx=0.569, rely=0.05, height=24, width=114)
@@ -360,10 +369,10 @@ class Toplevel1:
                                  , relheight=0.0, height=26)
         self.TRadiobutton5.configure(text='''Oprollen''', variable=self.var3, value=0)
 
-        self.TRadiobutton5 = ttk.Radiobutton(self.TFrame2)
-        self.TRadiobutton5.place(relx=0.848, rely=0.5, relwidth=0.06
+        self.TRadiobutton6 = ttk.Radiobutton(self.TFrame2)
+        self.TRadiobutton6.place(relx=0.848, rely=0.5, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton5.configure(text='''Uitrollen''', variable=self.var3, value=1)
+        self.TRadiobutton6.configure(text='''Uitrollen''', variable=self.var3, value=1)
 
         self.TButton5 = ttk.Button(self.TFrame2)
         self.TButton5.place(relx=0.974, rely=0.0, height=30, width=38)
@@ -375,7 +384,7 @@ class Toplevel1:
         self.TButton6.configure(takefocus="")
         self.TButton6.configure(text='''V''')
 
-        self.TFrame5 = ttk.Frame(top)
+        self.TFrame5 = ttk.Frame(top) # begin 2e blok
         self.TFrame5.place(relx=0.0, rely=0.231, relheight=0.19, relwidth=0.991)
         self.TFrame5.configure(relief='groove')
         self.TFrame5.configure(borderwidth="2")
@@ -411,10 +420,12 @@ class Toplevel1:
         self.TButton7.configure(takefocus="")
         self.TButton7.configure(text='''Lijndiagram''')
 
+
         self.TButton8 = ttk.Button(self.TFrame5)
         self.TButton8.place(relx=0.424, rely=0.6, height=30, width=100)
         self.TButton8.configure(takefocus="")
         self.TButton8.configure(text='''Staafdiagram''')
+        self.TButton8.configure(command=lambda: self.add_bar(self.TFrame6))
 
         self.TLabel18 = ttk.Label(self.TFrame5)
         self.TLabel18.place(relx=0.569, rely=0.05, height=24, width=114)
@@ -532,15 +543,15 @@ class Toplevel1:
 
         self.var4 = StringVar()
 
-        self.TRadiobutton6 = ttk.Radiobutton(self.TFrame5)
-        self.TRadiobutton6.place(relx=0.848, rely=0.26, relwidth=0.06
+        self.TRadiobutton7 = ttk.Radiobutton(self.TFrame5)
+        self.TRadiobutton7.place(relx=0.848, rely=0.26, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton6.configure(text='''Oprollen''', variable=self.var4, value=0)
+        self.TRadiobutton7.configure(text='''Oprollen''', variable=self.var4, value=0)
 
-        self.TRadiobutton6 = ttk.Radiobutton(self.TFrame5)
-        self.TRadiobutton6.place(relx=0.848, rely=0.5, relwidth=0.06
+        self.TRadiobutton8 = ttk.Radiobutton(self.TFrame5)
+        self.TRadiobutton8.place(relx=0.848, rely=0.5, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton6.configure(text='''Uitrollen''', variable=self.var4, value=1)
+        self.TRadiobutton8.configure(text='''Uitrollen''', variable=self.var4, value=1)
 
         self.TButton11 = ttk.Button(self.TFrame5)
         self.TButton11.place(relx=0.974, rely=0.0, height=30, width=38)
@@ -552,30 +563,30 @@ class Toplevel1:
         self.TButton12.configure(takefocus="")
         self.TButton12.configure(text='''V''')
 
-        self.TFrame6 = ttk.Frame(top)
-        self.TFrame6.place(relx=0.0, rely=0.782, relheight=0.19, relwidth=0.991)
-        self.TFrame6.configure(relief='groove')
-        self.TFrame6.configure(borderwidth="2")
-        self.TFrame6.configure(relief='groove')
-        self.TFrame6.configure(width=1325)
-
-        self.TFrame7 = ttk.Frame(self.TFrame6)
-        self.TFrame7.place(relx=0.004, rely=0.031, relheight=0.906
-                           , relwidth=0.227)
-        self.TFrame7.configure(relief='groove')
-        self.TFrame7.configure(borderwidth="2")
-        self.TFrame7.configure(relief='groove')
-        self.TFrame7.configure(width=305)
-
-        self.TFrame8 = ttk.Frame(self.TFrame6)
-        self.TFrame8.place(relx=0.242, rely=0.031, relheight=0.906
-                            , relwidth=0.16)
+        self.TFrame8 = ttk.Frame(top)
+        self.TFrame8.place(relx=0.0, rely=0.782, relheight=0.19, relwidth=0.991)
         self.TFrame8.configure(relief='groove')
         self.TFrame8.configure(borderwidth="2")
         self.TFrame8.configure(relief='groove')
-        self.TFrame8.configure(width=215)
+        self.TFrame8.configure(width=1325)
 
-        self.TLabel25 = ttk.Label(self.TFrame6)
+        self.TFrame9 = ttk.Frame(self.TFrame8)
+        self.TFrame9.place(relx=0.004, rely=0.031, relheight=0.906
+                           , relwidth=0.227)
+        self.TFrame9.configure(relief='groove')
+        self.TFrame9.configure(borderwidth="2")
+        self.TFrame9.configure(relief='groove')
+        self.TFrame9.configure(width=305)
+
+        self.TFrame10 = ttk.Frame(self.TFrame8)
+        self.TFrame10.place(relx=0.242, rely=0.031, relheight=0.906
+                            , relwidth=0.16)
+        self.TFrame10.configure(relief='groove')
+        self.TFrame10.configure(borderwidth="2")
+        self.TFrame10.configure(relief='groove')
+        self.TFrame10.configure(width=215)
+
+        self.TLabel25 = ttk.Label(self.TFrame8)
         self.TLabel25.place(relx=0.431, rely=0.05, height=24, width=95)
         self.TLabel25.configure(background="#d9d9d9")
         self.TLabel25.configure(foreground="#000000")
@@ -583,17 +594,19 @@ class Toplevel1:
         self.TLabel25.configure(relief='flat')
         self.TLabel25.configure(text='''Diagrammen''')
 
-        self.TButton13 = ttk.Button(self.TFrame6)
+
+        self.TButton13 = ttk.Button(self.TFrame8)
         self.TButton13.place(relx=0.424, rely=0.3, height=30, width=98)
         self.TButton13.configure(takefocus="")
         self.TButton13.configure(text='''Lijndiagram''')
 
-        self.TButton14 = ttk.Button(self.TFrame6)
+        self.TButton14 = ttk.Button(self.TFrame8)
         self.TButton14.place(relx=0.424, rely=0.6, height=30, width=100)
         self.TButton14.configure(takefocus="")
         self.TButton14.configure(text='''Staafdiagram''')
+        self.TButton14.configure(command=lambda: self.add_bar(self.TFrame9))
 
-        self.TLabel26 = ttk.Label(self.TFrame6)
+        self.TLabel26 = ttk.Label(self.TFrame8)
         self.TLabel26.place(relx=0.569, rely=0.05, height=24, width=114)
         self.TLabel26.configure(background="#d9d9d9")
         self.TLabel26.configure(foreground="#000000")
@@ -601,7 +614,7 @@ class Toplevel1:
         self.TLabel26.configure(relief='flat')
         self.TLabel26.configure(text='''Maximale rolstand''')
 
-        self.TLabel27 = ttk.Label(self.TFrame6)
+        self.TLabel27 = ttk.Label(self.TFrame8)
         self.TLabel27.place(relx=0.539, rely=0.26, height=24, width=60)
         self.TLabel27.configure(background="#d9d9d9")
         self.TLabel27.configure(foreground="#000000")
@@ -612,7 +625,7 @@ class Toplevel1:
         self.TLabel27.configure(text='''Oprollen:''')
         self.TLabel27.configure(width=0)
 
-        self.TLabel28 = ttk.Label(self.TFrame6)
+        self.TLabel28 = ttk.Label(self.TFrame8)
         self.TLabel28.place(relx=0.659, rely=0.26, height=24, width=60)
         self.TLabel28.configure(background="#d9d9d9")
         self.TLabel28.configure(foreground="#000000")
@@ -623,7 +636,7 @@ class Toplevel1:
         self.TLabel28.configure(text='''%''')
         self.TLabel28.configure(width=0)
 
-        self.TLabel29 = ttk.Label(self.TFrame6)
+        self.TLabel29 = ttk.Label(self.TFrame8)
         self.TLabel29.place(relx=0.539, rely=0.50, height=24, width=60)
         self.TLabel29.configure(background="#d9d9d9")
         self.TLabel29.configure(foreground="#000000")
@@ -634,7 +647,7 @@ class Toplevel1:
         self.TLabel29.configure(text='''Uitrollen:''')
         self.TLabel29.configure(width=0)
 
-        self.TLabel30 = ttk.Label(self.TFrame6)
+        self.TLabel30 = ttk.Label(self.TFrame8)
         self.TLabel30.place(relx=0.659, rely=0.50, height=24, width=60)
         self.TLabel30.configure(background="#d9d9d9")
         self.TLabel30.configure(foreground="#000000")
@@ -645,7 +658,7 @@ class Toplevel1:
         self.TLabel30.configure(text='''%''')
         self.TLabel30.configure(width=0)
 
-        self.Scale5 = tk.Scale(self.TFrame6)
+        self.Scale5 = tk.Scale(self.TFrame8)
         self.Scale5.place(relx=0.584, rely=0.17, relwidth=0.074, relheight=0.0
                            , height=47, bordermode='ignore')
         self.Scale5.configure(activebackground="#ececec")
@@ -657,7 +670,7 @@ class Toplevel1:
         self.Scale5.configure(orient="horizontal")
         self.Scale5.configure(troughcolor="#d9d9d9")
 
-        self.Scale5 = tk.Scale(self.TFrame6)
+        self.Scale5 = tk.Scale(self.TFrame8)
         self.Scale5.place(relx=0.584, rely=0.40, relwidth=0.074, relheight=0.0
                           , height=47, bordermode='ignore')
         self.Scale5.configure(activebackground="#ececec")
@@ -669,12 +682,12 @@ class Toplevel1:
         self.Scale5.configure(orient="horizontal")
         self.Scale5.configure(troughcolor="#d9d9d9")
 
-        self.TButton15 = ttk.Button(self.TFrame6)
+        self.TButton15 = ttk.Button(self.TFrame8)
         self.TButton15.place(relx=0.569, rely=0.7, height=30, width=98)
         self.TButton15.configure(takefocus="")
         self.TButton15.configure(text='''Submit''')
 
-        self.TLabel31 = ttk.Label(self.TFrame6)
+        self.TLabel31 = ttk.Label(self.TFrame8)
         self.TLabel31.place(relx=0.71, rely=0.05, height=24, width=120)
         self.TLabel31.configure(background="#d9d9d9")
         self.TLabel31.configure(foreground="#000000")
@@ -682,7 +695,7 @@ class Toplevel1:
         self.TLabel31.configure(relief='flat')
         self.TLabel31.configure(text='''Waarde op/uitrollen''')
 
-        self.Entry3 = tk.Entry(self.TFrame6)
+        self.Entry3 = tk.Entry(self.TFrame8)
         self.Entry3.place(relx=0.73, rely=0.38, height=24, relwidth=0.04)
         self.Entry3.configure(background="white")
         self.Entry3.configure(disabledforeground="#a3a3a3")
@@ -694,12 +707,12 @@ class Toplevel1:
         self.Entry3.configure(selectbackground="#c4c4c4")
         self.Entry3.configure(selectforeground="black")
 
-        self.TButton16 = ttk.Button(self.TFrame6)
+        self.TButton16 = ttk.Button(self.TFrame8)
         self.TButton16.place(relx=0.715, rely=0.7, height=30, width=98)
         self.TButton16.configure(takefocus="")
         self.TButton16.configure(text='''Submit''')
 
-        self.TLabel32 = ttk.Label(self.TFrame6)
+        self.TLabel32 = ttk.Label(self.TFrame8)
         self.TLabel32.place(relx=0.85, rely=0.05, height=24, width=94)
         self.TLabel32.configure(background="#d9d9d9")
         self.TLabel32.configure(foreground="#000000")
@@ -709,50 +722,50 @@ class Toplevel1:
 
         self.var5 = StringVar()
 
-        self.TRadiobutton7 = ttk.Radiobutton(self.TFrame6)
-        self.TRadiobutton7.place(relx=0.848, rely=0.26, relwidth=0.06
+        self.TRadiobutton9 = ttk.Radiobutton(self.TFrame8)
+        self.TRadiobutton9.place(relx=0.848, rely=0.26, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton7.configure(text='''Oprollen''', variable=self.var5, value=0)
+        self.TRadiobutton9.configure(text='''Oprollen''', variable=self.var5, value=0)
 
-        self.TRadiobutton7 = ttk.Radiobutton(self.TFrame6)
-        self.TRadiobutton7.place(relx=0.848, rely=0.5, relwidth=0.06
+        self.TRadiobutton10 = ttk.Radiobutton(self.TFrame8)
+        self.TRadiobutton10.place(relx=0.848, rely=0.5, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton7.configure(text='''Uitrollen''', variable=self.var5, value=1)
+        self.TRadiobutton10.configure(text='''Uitrollen''', variable=self.var5, value=1)
 
-        self.TButton17 = ttk.Button(self.TFrame6)
+        self.TButton17 = ttk.Button(self.TFrame8)
         self.TButton17.place(relx=0.974, rely=0.0, height=30, width=38)
         self.TButton17.configure(takefocus="")
         self.TButton17.configure(text='''X''')
 
-        self.TButton18 = ttk.Button(self.TFrame6)
+        self.TButton18 = ttk.Button(self.TFrame8)
         self.TButton18.place(relx=0.948, rely=0.0, height=30, width=38)
         self.TButton18.configure(takefocus="")
         self.TButton18.configure(text='''V''')
 
-        self.TFrame9 = ttk.Frame(top)
-        self.TFrame9.place(relx=0.0, rely=0.598, relheight=0.19, relwidth=0.991)
-        self.TFrame9.configure(relief='groove')
-        self.TFrame9.configure(borderwidth="2")
-        self.TFrame9.configure(relief='groove')
-        self.TFrame9.configure(width=1325)
-
-        self.TFrame10 = ttk.Frame(self.TFrame9)
-        self.TFrame10.place(relx=0.004, rely=0.031, relheight=0.906
-                           , relwidth=0.227)
-        self.TFrame10.configure(relief='groove')
-        self.TFrame10.configure(borderwidth="2")
-        self.TFrame10.configure(relief='groove')
-        self.TFrame10.configure(width=305)
-
-        self.TFrame11 = ttk.Frame(self.TFrame9)
-        self.TFrame11.place(relx=0.242, rely=0.031, relheight=0.906
-                            , relwidth=0.16)
+        self.TFrame11 = ttk.Frame(top)
+        self.TFrame11.place(relx=0.0, rely=0.598, relheight=0.19, relwidth=0.991)
         self.TFrame11.configure(relief='groove')
         self.TFrame11.configure(borderwidth="2")
         self.TFrame11.configure(relief='groove')
-        self.TFrame11.configure(width=215)
+        self.TFrame11.configure(width=1325)
 
-        self.TLabel33 = ttk.Label(self.TFrame9)
+        self.TFrame12 = ttk.Frame(self.TFrame11)
+        self.TFrame12.place(relx=0.004, rely=0.031, relheight=0.906
+                           , relwidth=0.227)
+        self.TFrame12.configure(relief='groove')
+        self.TFrame12.configure(borderwidth="2")
+        self.TFrame12.configure(relief='groove')
+        self.TFrame12.configure(width=305)
+
+        self.TFrame13 = ttk.Frame(self.TFrame11)
+        self.TFrame13.place(relx=0.242, rely=0.031, relheight=0.906
+                            , relwidth=0.16)
+        self.TFrame13.configure(relief='groove')
+        self.TFrame13.configure(borderwidth="2")
+        self.TFrame13.configure(relief='groove')
+        self.TFrame13.configure(width=215)
+
+        self.TLabel33 = ttk.Label(self.TFrame11)
         self.TLabel33.place(relx=0.431, rely=0.05, height=24, width=95)
         self.TLabel33.configure(background="#d9d9d9")
         self.TLabel33.configure(foreground="#000000")
@@ -760,17 +773,18 @@ class Toplevel1:
         self.TLabel33.configure(relief='flat')
         self.TLabel33.configure(text='''Diagrammen''')
 
-        self.TButton19 = ttk.Button(self.TFrame9)
+        self.TButton19 = ttk.Button(self.TFrame11)
         self.TButton19.place(relx=0.424, rely=0.3, height=30, width=98)
         self.TButton19.configure(takefocus="")
         self.TButton19.configure(text='''Lijndiagram''')
 
-        self.TButton20 = ttk.Button(self.TFrame9)
+        self.TButton20 = ttk.Button(self.TFrame11)
         self.TButton20.place(relx=0.424, rely=0.6, height=30, width=100)
         self.TButton20.configure(takefocus="")
         self.TButton20.configure(text='''Staafdiagram''')
+        self.TButton20.configure(command=lambda: self.add_bar(self.TFrame12))
 
-        self.TLabel34 = ttk.Label(self.TFrame9)
+        self.TLabel34 = ttk.Label(self.TFrame11)
         self.TLabel34.place(relx=0.569, rely=0.05, height=24, width=114)
         self.TLabel34.configure(background="#d9d9d9")
         self.TLabel34.configure(foreground="#000000")
@@ -778,7 +792,7 @@ class Toplevel1:
         self.TLabel34.configure(relief='flat')
         self.TLabel34.configure(text='''Maximale rolstand''')
 
-        self.TLabel35 = ttk.Label(self.TFrame9)
+        self.TLabel35 = ttk.Label(self.TFrame11)
         self.TLabel35.place(relx=0.539, rely=0.26, height=24, width=60)
         self.TLabel35.configure(background="#d9d9d9")
         self.TLabel35.configure(foreground="#000000")
@@ -789,7 +803,7 @@ class Toplevel1:
         self.TLabel35.configure(text='''Oprollen:''')
         self.TLabel35.configure(width=0)
 
-        self.TLabel36 = ttk.Label(self.TFrame9)
+        self.TLabel36 = ttk.Label(self.TFrame11)
         self.TLabel36.place(relx=0.659, rely=0.26, height=24, width=60)
         self.TLabel36.configure(background="#d9d9d9")
         self.TLabel36.configure(foreground="#000000")
@@ -800,7 +814,7 @@ class Toplevel1:
         self.TLabel36.configure(text='''%''')
         self.TLabel36.configure(width=0)
 
-        self.TLabel37 = ttk.Label(self.TFrame9)
+        self.TLabel37 = ttk.Label(self.TFrame11)
         self.TLabel37.place(relx=0.539, rely=0.50, height=24, width=60)
         self.TLabel37.configure(background="#d9d9d9")
         self.TLabel37.configure(foreground="#000000")
@@ -811,7 +825,7 @@ class Toplevel1:
         self.TLabel37.configure(text='''Uitrollen:''')
         self.TLabel37.configure(width=0)
 
-        self.TLabel38 = ttk.Label(self.TFrame9)
+        self.TLabel38 = ttk.Label(self.TFrame11)
         self.TLabel38.place(relx=0.659, rely=0.50, height=24, width=60)
         self.TLabel38.configure(background="#d9d9d9")
         self.TLabel38.configure(foreground="#000000")
@@ -822,7 +836,7 @@ class Toplevel1:
         self.TLabel38.configure(text='''%''')
         self.TLabel38.configure(width=0)
 
-        self.Scale6 = tk.Scale(self.TFrame9)
+        self.Scale6 = tk.Scale(self.TFrame11)
         self.Scale6.place(relx=0.584, rely=0.17, relwidth=0.074, relheight=0.0
                           , height=47, bordermode='ignore')
         self.Scale6.configure(activebackground="#ececec")
@@ -834,7 +848,7 @@ class Toplevel1:
         self.Scale6.configure(orient="horizontal")
         self.Scale6.configure(troughcolor="#d9d9d9")
 
-        self.Scale7 = tk.Scale(self.TFrame9)
+        self.Scale7 = tk.Scale(self.TFrame11)
         self.Scale7.place(relx=0.584, rely=0.40, relwidth=0.074, relheight=0.0
                           , height=47, bordermode='ignore')
         self.Scale7.configure(activebackground="#ececec")
@@ -846,12 +860,12 @@ class Toplevel1:
         self.Scale7.configure(orient="horizontal")
         self.Scale7.configure(troughcolor="#d9d9d9")
 
-        self.TButton21 = ttk.Button(self.TFrame9)
+        self.TButton21 = ttk.Button(self.TFrame11)
         self.TButton21.place(relx=0.569, rely=0.7, height=30, width=98)
         self.TButton21.configure(takefocus="")
         self.TButton21.configure(text='''Submit''')
 
-        self.TLabel39 = ttk.Label(self.TFrame9)
+        self.TLabel39 = ttk.Label(self.TFrame11)
         self.TLabel39.place(relx=0.71, rely=0.05, height=24, width=120)
         self.TLabel39.configure(background="#d9d9d9")
         self.TLabel39.configure(foreground="#000000")
@@ -859,7 +873,7 @@ class Toplevel1:
         self.TLabel39.configure(relief='flat')
         self.TLabel39.configure(text='''Waarde op/uitrollen''')
 
-        self.Entry4 = tk.Entry(self.TFrame9)
+        self.Entry4 = tk.Entry(self.TFrame11)
         self.Entry4.place(relx=0.73, rely=0.38, height=24, relwidth=0.04)
         self.Entry4.configure(background="white")
         self.Entry4.configure(disabledforeground="#a3a3a3")
@@ -871,12 +885,12 @@ class Toplevel1:
         self.Entry4.configure(selectbackground="#c4c4c4")
         self.Entry4.configure(selectforeground="black")
 
-        self.TButton22 = ttk.Button(self.TFrame9)
+        self.TButton22 = ttk.Button(self.TFrame11)
         self.TButton22.place(relx=0.715, rely=0.7, height=30, width=98)
         self.TButton22.configure(takefocus="")
         self.TButton22.configure(text='''Submit''')
 
-        self.TLabel40 = ttk.Label(self.TFrame9)
+        self.TLabel40 = ttk.Label(self.TFrame11)
         self.TLabel40.place(relx=0.85, rely=0.05, height=24, width=94)
         self.TLabel40.configure(background="#d9d9d9")
         self.TLabel40.configure(foreground="#000000")
@@ -886,50 +900,50 @@ class Toplevel1:
 
         self.var6 = StringVar()
 
-        self.TRadiobutton8 = ttk.Radiobutton(self.TFrame9)
-        self.TRadiobutton8.place(relx=0.848, rely=0.26, relwidth=0.06
+        self.TRadiobutton11 = ttk.Radiobutton(self.TFrame11)
+        self.TRadiobutton11.place(relx=0.848, rely=0.26, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton8.configure(text='''Oprollen''', variable=self.var6, value=0)
+        self.TRadiobutton11.configure(text='''Oprollen''', variable=self.var6, value=0)
 
-        self.TRadiobutton8 = ttk.Radiobutton(self.TFrame9)
-        self.TRadiobutton8.place(relx=0.848, rely=0.5, relwidth=0.06
+        self.TRadiobutton12 = ttk.Radiobutton(self.TFrame11)
+        self.TRadiobutton12.place(relx=0.848, rely=0.5, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton8.configure(text='''Uitrollen''', variable=self.var6, value=1)
+        self.TRadiobutton12.configure(text='''Uitrollen''', variable=self.var6, value=1)
 
-        self.TButton23 = ttk.Button(self.TFrame9)
+        self.TButton23 = ttk.Button(self.TFrame11)
         self.TButton23.place(relx=0.974, rely=0.0, height=30, width=38)
         self.TButton23.configure(takefocus="")
         self.TButton23.configure(text='''X''')
 
-        self.TButton24 = ttk.Button(self.TFrame9)
+        self.TButton24 = ttk.Button(self.TFrame11)
         self.TButton24.place(relx=0.948, rely=0.0, height=30, width=38)
         self.TButton24.configure(takefocus="")
         self.TButton24.configure(text='''V''')
 
-        self.TFrame12 = ttk.Frame(top)
-        self.TFrame12.place(relx=0.0, rely=0.415, relheight=0.19, relwidth=0.991)
-        self.TFrame12.configure(relief='groove')
-        self.TFrame12.configure(borderwidth="2")
-        self.TFrame12.configure(relief='groove')
-        self.TFrame12.configure(width=1325)
-
-        self.TFrame13 = ttk.Frame(self.TFrame12)
-        self.TFrame13.place(relx=0.004, rely=0.031, relheight=0.906
-                           , relwidth=0.227)
-        self.TFrame13.configure(relief='groove')
-        self.TFrame13.configure(borderwidth="2")
-        self.TFrame13.configure(relief='groove')
-        self.TFrame13.configure(width=305)
-
-        self.TFrame14 = ttk.Frame(self.TFrame12)
-        self.TFrame14.place(relx=0.242, rely=0.031, relheight=0.906
-                            , relwidth=0.16)
+        self.TFrame14 = ttk.Frame(top)
+        self.TFrame14.place(relx=0.0, rely=0.415, relheight=0.19, relwidth=0.991)
         self.TFrame14.configure(relief='groove')
         self.TFrame14.configure(borderwidth="2")
         self.TFrame14.configure(relief='groove')
-        self.TFrame14.configure(width=215)
+        self.TFrame14.configure(width=1325)
 
-        self.TLabel41 = ttk.Label(self.TFrame12)
+        self.TFrame15 = ttk.Frame(self.TFrame14)
+        self.TFrame15.place(relx=0.004, rely=0.031, relheight=0.906
+                           , relwidth=0.227)
+        self.TFrame15.configure(relief='groove')
+        self.TFrame15.configure(borderwidth="2")
+        self.TFrame15.configure(relief='groove')
+        self.TFrame15.configure(width=305)
+
+        self.TFrame16 = ttk.Frame(self.TFrame14)
+        self.TFrame16.place(relx=0.242, rely=0.031, relheight=0.906
+                               , relwidth=0.16)
+        self.TFrame16.configure(relief='groove')
+        self.TFrame16.configure(borderwidth="2")
+        self.TFrame16.configure(relief='groove')
+        self.TFrame16.configure(width=215)
+
+        self.TLabel41 = ttk.Label(self.TFrame14)
         self.TLabel41.place(relx=0.431, rely=0.05, height=24, width=95)
         self.TLabel41.configure(background="#d9d9d9")
         self.TLabel41.configure(foreground="#000000")
@@ -937,17 +951,18 @@ class Toplevel1:
         self.TLabel41.configure(relief='flat')
         self.TLabel41.configure(text='''Diagrammen''')
 
-        self.TButton25 = ttk.Button(self.TFrame12)
+        self.TButton25 = ttk.Button(self.TFrame14)
         self.TButton25.place(relx=0.424, rely=0.3, height=30, width=98)
         self.TButton25.configure(takefocus="")
         self.TButton25.configure(text='''Lijndiagram''')
 
-        self.TButton26 = ttk.Button(self.TFrame12)
+        self.TButton26 = ttk.Button(self.TFrame14)
         self.TButton26.place(relx=0.424, rely=0.6, height=30, width=100)
         self.TButton26.configure(takefocus="")
         self.TButton26.configure(text='''Staafdiagram''')
+        self.TButton26.configure(command=lambda: self.add_bar(self.TFrame15))
 
-        self.TLabel42 = ttk.Label(self.TFrame12)
+        self.TLabel42 = ttk.Label(self.TFrame14)
         self.TLabel42.place(relx=0.569, rely=0.05, height=24, width=114)
         self.TLabel42.configure(background="#d9d9d9")
         self.TLabel42.configure(foreground="#000000")
@@ -955,7 +970,7 @@ class Toplevel1:
         self.TLabel42.configure(relief='flat')
         self.TLabel42.configure(text='''Maximale rolstand''')
 
-        self.TLabel43 = ttk.Label(self.TFrame12)
+        self.TLabel43 = ttk.Label(self.TFrame14)
         self.TLabel43.place(relx=0.539, rely=0.26, height=24, width=60)
         self.TLabel43.configure(background="#d9d9d9")
         self.TLabel43.configure(foreground="#000000")
@@ -966,7 +981,7 @@ class Toplevel1:
         self.TLabel43.configure(text='''Oprollen:''')
         self.TLabel43.configure(width=0)
 
-        self.TLabel44 = ttk.Label(self.TFrame12)
+        self.TLabel44 = ttk.Label(self.TFrame14)
         self.TLabel44.place(relx=0.659, rely=0.26, height=24, width=60)
         self.TLabel44.configure(background="#d9d9d9")
         self.TLabel44.configure(foreground="#000000")
@@ -977,7 +992,7 @@ class Toplevel1:
         self.TLabel44.configure(text='''%''')
         self.TLabel44.configure(width=0)
 
-        self.TLabel45 = ttk.Label(self.TFrame12)
+        self.TLabel45 = ttk.Label(self.TFrame14)
         self.TLabel45.place(relx=0.539, rely=0.50, height=24, width=60)
         self.TLabel45.configure(background="#d9d9d9")
         self.TLabel45.configure(foreground="#000000")
@@ -988,7 +1003,7 @@ class Toplevel1:
         self.TLabel45.configure(text='''Uitrollen:''')
         self.TLabel45.configure(width=0)
 
-        self.TLabel46 = ttk.Label(self.TFrame12)
+        self.TLabel46 = ttk.Label(self.TFrame14)
         self.TLabel46.place(relx=0.659, rely=0.50, height=24, width=60)
         self.TLabel46.configure(background="#d9d9d9")
         self.TLabel46.configure(foreground="#000000")
@@ -999,7 +1014,7 @@ class Toplevel1:
         self.TLabel46.configure(text='''%''')
         self.TLabel46.configure(width=0)
 
-        self.Scale8 = tk.Scale(self.TFrame12)
+        self.Scale8 = tk.Scale(self.TFrame14)
         self.Scale8.place(relx=0.584, rely=0.17, relwidth=0.074, relheight=0.0
                            , height=47, bordermode='ignore')
         self.Scale8.configure(activebackground="#ececec")
@@ -1011,7 +1026,7 @@ class Toplevel1:
         self.Scale8.configure(orient="horizontal")
         self.Scale8.configure(troughcolor="#d9d9d9")
 
-        self.Scale9 = tk.Scale(self.TFrame12)
+        self.Scale9 = tk.Scale(self.TFrame14)
         self.Scale9.place(relx=0.584, rely=0.40, relwidth=0.074, relheight=0.0
                           , height=47, bordermode='ignore')
         self.Scale9.configure(activebackground="#ececec")
@@ -1023,12 +1038,12 @@ class Toplevel1:
         self.Scale9.configure(orient="horizontal")
         self.Scale9.configure(troughcolor="#d9d9d9")
 
-        self.TButton27 = ttk.Button(self.TFrame12)
+        self.TButton27 = ttk.Button(self.TFrame14)
         self.TButton27.place(relx=0.569, rely=0.7, height=30, width=98)
         self.TButton27.configure(takefocus="")
         self.TButton27.configure(text='''Submit''')
 
-        self.TLabel47 = ttk.Label(self.TFrame12)
+        self.TLabel47 = ttk.Label(self.TFrame14)
         self.TLabel47.place(relx=0.71, rely=0.05, height=24, width=120)
         self.TLabel47.configure(background="#d9d9d9")
         self.TLabel47.configure(foreground="#000000")
@@ -1036,7 +1051,7 @@ class Toplevel1:
         self.TLabel47.configure(relief='flat')
         self.TLabel47.configure(text='''Waarde op/uitrollen''')
 
-        self.Entry5 = tk.Entry(self.TFrame12)
+        self.Entry5 = tk.Entry(self.TFrame14)
         self.Entry5.place(relx=0.73, rely=0.38, height=24, relwidth=0.04)
         self.Entry5.configure(background="white")
         self.Entry5.configure(disabledforeground="#a3a3a3")
@@ -1048,12 +1063,12 @@ class Toplevel1:
         self.Entry5.configure(selectbackground="#c4c4c4")
         self.Entry5.configure(selectforeground="black")
 
-        self.TButton28 = ttk.Button(self.TFrame12)
+        self.TButton28 = ttk.Button(self.TFrame14)
         self.TButton28.place(relx=0.715, rely=0.7, height=30, width=98)
         self.TButton28.configure(takefocus="")
         self.TButton28.configure(text='''Submit''')
 
-        self.TLabel48 = ttk.Label(self.TFrame12)
+        self.TLabel48 = ttk.Label(self.TFrame14)
         self.TLabel48.place(relx=0.85, rely=0.05, height=24, width=94)
         self.TLabel48.configure(background="#d9d9d9")
         self.TLabel48.configure(foreground="#000000")
@@ -1063,22 +1078,22 @@ class Toplevel1:
 
         self.var7 = StringVar()
 
-        self.TRadiobutton9 = ttk.Radiobutton(self.TFrame12)
-        self.TRadiobutton9.place(relx=0.848, rely=0.26, relwidth=0.06
+        self.TRadiobutton13 = ttk.Radiobutton(self.TFrame14)
+        self.TRadiobutton13.place(relx=0.848, rely=0.26, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton9.configure(text='''Oprollen''', variable=self.var7, value=0)
+        self.TRadiobutton13.configure(text='''Oprollen''', variable=self.var7, value=0)
 
-        self.TRadiobutton9 = ttk.Radiobutton(self.TFrame12)
-        self.TRadiobutton9.place(relx=0.848, rely=0.5, relwidth=0.06
+        self.TRadiobutton14 = ttk.Radiobutton(self.TFrame14)
+        self.TRadiobutton14.place(relx=0.848, rely=0.5, relwidth=0.06
                                  , relheight=0.0, height=26)
-        self.TRadiobutton9.configure(text='''Uitrollen''', variable=self.var7, value=1)
+        self.TRadiobutton14.configure(text='''Uitrollen''', variable=self.var7, value=1)
 
-        self.TButton29 = ttk.Button(self.TFrame12)
+        self.TButton29 = ttk.Button(self.TFrame14)
         self.TButton29.place(relx=0.974, rely=0.0, height=30, width=38)
         self.TButton29.configure(takefocus="")
         self.TButton29.configure(text='''X''')
 
-        self.TButton30 = ttk.Button(self.TFrame12)
+        self.TButton30 = ttk.Button(self.TFrame14)
         self.TButton30.place(relx=0.948, rely=0.0, height=30, width=38)
         self.TButton30.configure(takefocus="")
         self.TButton30.configure(text='''V''')
@@ -1086,7 +1101,64 @@ class Toplevel1:
         self.menubar = tk.Menu(top,font="TkMenuFont",bg=_bgcolor,fg=_fgcolor)
         top.configure(menu = self.menubar)
 
-def handmatig_uit:
+
+    def handmatigUit(self):
+        self.TRadiobutton3.config(state='disable')
+        self.TRadiobutton4.config(state='disable')
+        self.TRadiobutton5.config(state='disable')
+        self.TRadiobutton6.config(state='disable')
+        self.TRadiobutton7.config(state='disable')
+        self.TRadiobutton8.config(state='disable')
+        self.TRadiobutton9.config(state='disable')
+        self.TRadiobutton10.config(state='disable')
+        self.TRadiobutton11.config(state='disable')
+        self.TRadiobutton12.config(state='disable')
+        self.TRadiobutton13.config(state='disable')
+        self.TRadiobutton14.config(state='disable')
+        self.Entry1.config(state='normal')
+        self.Entry2.config(state='normal')
+        self.Entry3.config(state='normal')
+        self.Entry4.config(state='normal')
+        self.Entry5.config(state='normal')
+        self.TButton4.config(state='normal')
+        self.TButton10.config(state='normal')
+        self.TButton16.config(state='normal')
+        self.TButton22.config(state='normal')
+        self.TButton28.config(state='normal')
+
+    def handmatigAan(self):
+        self.TRadiobutton3.config(state='normal')
+        self.TRadiobutton4.config(state='normal')
+        self.TRadiobutton5.config(state='normal')
+        self.TRadiobutton6.config(state='normal')
+        self.TRadiobutton7.config(state='normal')
+        self.TRadiobutton8.config(state='normal')
+        self.TRadiobutton9.config(state='normal')
+        self.TRadiobutton10.config(state='normal')
+        self.TRadiobutton11.config(state='normal')
+        self.TRadiobutton12.config(state='normal')
+        self.TRadiobutton13.config(state='normal')
+        self.TRadiobutton14.config(state='normal')
+        self.Entry1.config(state='disable')
+        self.Entry2.config(state='disable')
+        self.Entry3.config(state='disable')
+        self.Entry4.config(state='disable')
+        self.Entry5.config(state='disable')
+        self.TButton4.config(state='disable')
+        self.TButton10.config(state='disable')
+        self.TButton16.config(state='disable')
+        self.TButton22.config(state='disable')
+        self.TButton28.config(state='disable')
+
+    def add_bar(self,frame):
+        self.frame = frame
+        x=lijngrafiek(self.frame)
+        x.build()
+    def add_table(self,frames):
+        self.frames = frames
+        y= tabel(self.frames)
+        y.build()
+
     
 
 if __name__ == '__main__':
