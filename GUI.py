@@ -1,6 +1,6 @@
 from tkinter import *
 import sys
-from iets import *
+from velden import *
 from database import *
 try:
     import Tkinter as tk
