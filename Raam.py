@@ -12,7 +12,15 @@ class Raam:
         self.mode = True
         self.status = "In"
         self.uitrolstand = 50
-        self.connectDevice(self.name, self.port)
+        self.connected = False
+        self.tempList = []
+        self.brightList = []
+        try:
+            self.connectDevice(self.name, self.port)
+            self.connected = True
+        except:
+            print(self.name + " not connected.")
+        self.isRequesting = False
 
     def connectDevice(self, name, port):
         global ser
@@ -21,12 +29,12 @@ class Raam:
         self.handshake()
 
     def statusthreader(self):
-        brightnessthread = threading.Thread(None, self.getBrightness)
-        brightnessthread.start()
+        self.brightnessthread = threading.Thread(None, self.getBrightness)
+        self.brightnessthread.start()
         self.temperaturethread = threading.Thread(None, self.getTemp)
         self.temperaturethread.start()
-        # distthread = threading.Thread(None, sendHandler.getDistance)
-        # distthread.start()
+        self.distthread = threading.Thread(None, self.getDistance)
+        self.distthread.start()
 
     def statusprocessor(self):
         self.statusprocess = Process(target=self.statusthreader())
@@ -53,6 +61,15 @@ class Raam:
     def getUitrolstand(self):
         return self.uitrolstand
 
+    def getConnected(self):
+        return self.connected
+
+    def getBrightList(self):
+        return self.brightList
+
+    def getTempList(self):
+        return self.tempList
+
     def requestInfo(self, command):
         self.ser.write((command + "\n").encode('ascii'))
         extra_info = "Succesvol uitgevoerd"
@@ -72,27 +89,51 @@ class Raam:
         time.sleep(2)
         while True:
             time.sleep(5)
-            r = self.requestInfo("2")
-            # self.brightnessLabel.config(text="Brightness: %s" % r[1])
-            brightnessFinal = int(r[1]) / 10.24
-            print("Brightness: " + str(round(brightnessFinal, 2)))
+            try:
+                if self.isRequesting == False:
+                    self.isRequesting = True
+                    r = self.requestInfo("2")
+                    # self.brightnessLabel.config(text="Brightness: %s" % r[1])
+                    brightnessFinal = int(r[1]) / 10.24
+                    self.brightList.append(round(brightnessFinal, 2))
+                    print(self.name + ": Brightness: " + str(round(brightnessFinal, 2)))
+                    self.isRequesting = False
+
+            except:
+                print(self.name + "disconnected")
+                self.connected = False
 
     def getTemp(self):
         while True:
             time.sleep(5)
-            r = self.requestInfo("1")
-            # self.brightnessLabel.config(text="Brightness: %s" % r[1])
-            tempFinal = int(r[1]) / 100
-            print("Temp: " + str(tempFinal))
+            try:
+                if self.isRequesting == False:
+                    self.isRequesting = True
+                    r = self.requestInfo("1")
+                    # self.brightnessLabel.config(text="Brightness: %s" % r[1])
+                    tempFinal = int(r[1]) / 100
+                    self.tempList.append(round(tempFinal, 2))
+                    print(self.name + ": Temp: " + str(tempFinal))
+                    self.isRequesting = False
+            except:
+                print(self.name + " is gedisconnect")
+                self.connected = False
 
     def getDistance(self):
+        #time.sleep(3)
         while True:
-            time.sleep(5)
-            r = self.requestInfo("3")
-            # self.brightnessLabel.config(text="Brightness: %s" % r[1])
-            print("Distance: " + r[1])
+            time.sleep(2)
+            try:
+                if self.isRequesting == False:
+                    self.isRequesting = True
+                    r = self.requestInfo("3")
+                    # self.brightnessLabel.config(text="Brightness: %s" % r[1])
+                    print(self.name + ": Distance: " + str(r[1]))
+                    self.isRequesting = False
+            except:
+                print(self.name + "disconnected")
+                self.connected = False
 
-    # Creates the handshake, provided by Simon van der Meer
     def handshake(self):
         tries_left = 3
         while tries_left > 0:
@@ -125,4 +166,16 @@ class Raam:
             self.status = "Uit"
         else:
             self.status = "In"
+
+    def setConnected(self):
+        if self.connected == True:
+            self.connected = False
+        else:
+            try:
+                self.connectDevice(self.name, self.port)
+                self.connected = True
+            except:
+                print(self.name + " not connected.")
+
+
 
